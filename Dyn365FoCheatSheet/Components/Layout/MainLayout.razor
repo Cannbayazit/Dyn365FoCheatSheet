@@ -1,0 +1,65 @@
+﻿@using Dyn365FoCheatSheet.Components.Shared
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IDialogService DialogService
+@inject HistoryService History
+
+<MudThemeProvider IsDarkMode="@IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider Position="SnackbarPosition.BottomRight" />
+
+<MudLayout>
+    <MudAppBar Style="background-color:#252729 !important;">
+        <span style="color:#00ff00;" class="ml-2">D365 Cheat Sheet</span>
+        <MudSpacer />
+
+        <!-- Theme toggle button -->
+        <MudIconButton Icon="@Icons.Material.Filled.Brightness6"
+                       Style="color:#00ff00;"
+                       OnClick="ToggleTheme"
+                       Edge="Edge.End" />
+
+        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                       Style="color:#00ff00;"
+                       OnClick="GoBack" 
+                       Edge="Edge.Start"
+                       Class="ml-2" />
+    </MudAppBar>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool IsDarkMode = true;
+
+    void ToggleTheme()
+    {
+        IsDarkMode = !IsDarkMode;
+    }
+
+    async Task GoBack()
+    {
+        if (History.PreviousUri == "https://0.0.0.1/")
+        {
+            var parameters = new DialogParameters
+            {
+                { "ContentText", "Çıkışı onaylıyor musunuz?" },
+                { "ContentTitle", "Çıkış" }
+            };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+            var dialog = await DialogService.ShowAsync<ConfirmDialog>("Çıkış Onayı", parameters, options);
+            var result = await dialog.Result;
+
+            if (result is { Canceled: false, Data: true })
+            {
+                Navigation.NavigateTo("/");
+            }
+            return;
+        }
+
+        await JS.InvokeVoidAsync("history.back");
+    }
+}

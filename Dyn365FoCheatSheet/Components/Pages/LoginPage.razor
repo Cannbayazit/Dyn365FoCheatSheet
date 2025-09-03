@@ -1,0 +1,45 @@
+﻿@page "/"
+@layout BaseLayout
+@inject NavigationManager navigationManager
+@inject HistoryService History
+@inject ISnackbar Snackbar
+@inject AuthService AuthService
+
+<MudPaper Class="d-flex flex-column pa-6 ma-auto" Style="max-width:400px; margin-top:100px;">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Giriş Yap</MudText>
+
+    <MudTextField @bind-Value="Username" Label="Kullanıcı Adı" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+    <MudTextField @bind-Value="Password" Label="Şifre" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-6" OnClick="LoginAsync" FullWidth="true">
+        <MudIcon Icon="@Icons.Material.Filled.Login" Class="mr-2" />
+        Giriş
+    </MudButton>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-4">@ErrorMessage</MudAlert>
+    }
+</MudPaper>
+
+
+@code {
+    private string? Username { get; set; }
+    private string? Password { get; set; }
+    private string? ErrorMessage { get; set; }
+
+    private async Task LoginAsync()
+    {
+        var success = await AuthService.LoginAsync(Username, Password);
+        if (success)
+        {
+            Snackbar.Add("Giriş Yaptınız.", Severity.Success);
+            navigationManager.NavigateTo("/home");
+        }
+        else
+        {
+            ErrorMessage = "Kullanıcı adı veya şifre hatalı!";
+            Snackbar.Add("Giriş Başarısız!", Severity.Error);
+        }
+    }
+}
