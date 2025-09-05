@@ -1,0 +1,25 @@
+@page "/texteditor"
+@inject IJSRuntime JS
+
+<MudPaper Class="pa-6 ma-auto" Style="max-width:900px; margin-top:60px;">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">JavaScript Code Editor</MudText>
+    <MonacoEditor @ref="monacoRef" Language="javascript" />
+    <MudStack Direction="Row" Spacing="2" Class="mb-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="RunCode">Run</MudButton>
+    </MudStack>
+    <MudPaper Class="pa-4" Style="background:#222; color:#0f0; min-height:100px;">
+        <MudText Typo="Typo.subtitle2">Console Output:</MudText>
+        <MudText Typo="Typo.body2">@ConsoleOutput</MudText>
+    </MudPaper>
+</MudPaper>
+
+@code {
+    private MonacoEditor monacoRef;
+    private string ConsoleOutput { get; set; } = "";
+
+    private async Task RunCode()
+    {
+        var code = await monacoRef.GetValueAsync();
+        ConsoleOutput = await JS.InvokeAsync<string>("runJsCode", code);
+    }
+}

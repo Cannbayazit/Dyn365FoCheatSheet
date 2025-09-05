@@ -1,0 +1,22 @@
+@inject IJSRuntime JS
+
+<div id="monaco-editor" style="height:400px;border:1px solid #ccc;"></div>
+
+@code {
+    [Parameter] public string Value { get; set; }
+    [Parameter] public string Language { get; set; } = "javascript";
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    public async Task<string> GetValueAsync()
+    {
+        return await JS.InvokeAsync<string>("getMonacoValue", "monaco-editor");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("loadMonacoEditor", "monaco-editor", "");
+        }
+    }
+}

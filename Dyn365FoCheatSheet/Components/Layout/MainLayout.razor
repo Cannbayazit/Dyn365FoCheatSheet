@@ -16,6 +16,11 @@
         <MudSpacer />
 
         <!-- Theme toggle button -->
+        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Style="color:#00ff00;"
+                       OnClick="GoAddPage"
+                       Edge="Edge.Start"
+                       Class="ml-2" />
         <MudIconButton Icon="@Icons.Material.Filled.Brightness6"
                        Style="color:#00ff00;"
                        OnClick="ToggleTheme"
@@ -62,4 +67,12 @@
 
         await JS.InvokeVoidAsync("history.back");
     }
+
+
+    void GoAddPage()
+    {
+         Navigation.NavigateTo("/texteditor");
+    }
+
+
 }

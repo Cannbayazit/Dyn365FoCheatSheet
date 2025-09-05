@@ -6,12 +6,16 @@
 @inject AuthService AuthService
 
 <MudPaper Class="d-flex flex-column pa-6 ma-auto" Style="max-width:400px; margin-top:100px;">
-    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Giriş Yap</MudText>
+
+    <MudImage Src="images/logo2.png"
+              Alt="Logo"
+              Width="120"
+              Class="mx-auto mb-4" />
 
     <MudTextField @bind-Value="Username" Label="Kullanıcı Adı" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
     <MudTextField @bind-Value="Password" Label="Şifre" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-6" OnClick="LoginAsync" FullWidth="true">
+    <MudButton Variant="Variant.Filled" Color="Color.Info" Class="mt-6" OnClick="LoginAsync" FullWidth="true">
         <MudIcon Icon="@Icons.Material.Filled.Login" Class="mr-2" />
         Giriş
     </MudButton>
