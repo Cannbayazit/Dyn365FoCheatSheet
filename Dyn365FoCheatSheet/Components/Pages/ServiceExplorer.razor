@@ -1,0 +1,50 @@
+@page "/service-explorer"
+@using System.Reflection
+@inject NavigationManager Navigation
+
+<MudPaper Class="pa-6 ma-auto" Style="max-width:900px; margin-top:60px;">
+    <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-6" Color="Color.Primary" Style="font-weight:bold;">
+        Service Explorer
+    </MudText>
+    <MudDivider Class="mb-4" />
+
+    @foreach (var service in ServiceTypes)
+    {
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="@service.Name">
+                @foreach (var method in service.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                    .Where(m => !m.IsSpecialName && !m.IsConstructor))
+                {
+                    <MudPaper Class="pa-4 mb-2">
+                        <MudText Typo="Typo.subtitle1">@method.Name</MudText>
+                        <MudText Typo="Typo.body2">
+                            Params: @string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.Name} {p.Name}"))
+                        </MudText>
+                        <MudText Typo="Typo.body2">Returns: @method.ReturnType.Name</MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                                   OnClick="@(() => GoToMethodTest(service.Name, method.Name))">
+                            Test
+                        </MudButton>
+                    </MudPaper> 
+                }
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    }
+</MudPaper>
+
+@code {
+    private List<Type> ServiceTypes { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        var assembly = typeof(AuthService).Assembly;
+        ServiceTypes = assembly.GetTypes()
+            .Where(t => t.Namespace != null && t.Namespace.Contains("Services") && t.IsClass)
+            .ToList();
+    }
+
+    void GoToMethodTest(string serviceName, string methodName)
+    {
+        Navigation.NavigateTo($"/service-test?service={serviceName}&method={methodName}");
+    }
+}

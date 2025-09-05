@@ -8,7 +8,7 @@
 <MudThemeProvider IsDarkMode="@IsDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
-<MudSnackbarProvider Position="SnackbarPosition.BottomRight" />
+<MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Style="background-color:#252729 !important;">
@@ -16,6 +16,11 @@
         <MudSpacer />
 
         <!-- Theme toggle button -->
+        <MudIconButton Icon="@Icons.Material.Filled.Search"
+                       Style="color:#00ff00;"
+                       OnClick="GoToServiceExplorer"
+                       Edge="Edge.End"
+                       Title="Service Explorer" />
         <MudIconButton Icon="@Icons.Material.Filled.Add"
                        Style="color:#00ff00;"
                        OnClick="GoAddPage"
@@ -72,6 +77,11 @@
     void GoAddPage()
     {
          Navigation.NavigateTo("/texteditor");
+    }
+
+    void GoToServiceExplorer()
+    {
+        Navigation.NavigateTo("/service-explorer");
     }
 
 

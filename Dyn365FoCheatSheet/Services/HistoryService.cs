@@ -10,7 +10,7 @@ namespace Dyn365FoCheatSheet.Services
 {
     public class HistoryService : IDisposable
     {
-        private readonly NavigationManager _nav;
+        public readonly NavigationManager _nav;
         public string CurrentUri { get; private set; } = "";
         public string PreviousUri { get; private set; } = "";
 
@@ -21,7 +21,7 @@ namespace Dyn365FoCheatSheet.Services
             _nav.LocationChanged += OnLocationChanged;
         }
 
-        private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+        public void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
             PreviousUri = CurrentUri;
             CurrentUri = e.Location;

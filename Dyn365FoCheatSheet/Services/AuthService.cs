@@ -1,15 +1,17 @@
-
-public class AuthService
+namespace Dyn365FoCheatSheet.Services
 {
-    private readonly User _testUser = new User
+    public class AuthService
     {
-        Username = "admin",
-        PasswordHash = "1234"
-    };
+        private readonly User _testUser = new User
+        {
+            Username = "admin",
+            PasswordHash = "1234"
+        };
 
-    public Task<bool> LoginAsync(string username, string password)
-    {
-        bool isValid = username == _testUser.Username && password == _testUser.PasswordHash;
-        return Task.FromResult(isValid);
+        public Task<bool> LoginAsync(string username, string password)
+        {
+            bool isValid = username == _testUser.Username && password == _testUser.PasswordHash;
+            return Task.FromResult(isValid);
+        }
     }
 }

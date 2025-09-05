@@ -1,0 +1,71 @@
+@page "/service-test"
+@using System.Reflection
+@inject NavigationManager Navigation
+
+@code {
+    [Parameter] public string? service { get; set; }
+    [Parameter] public string? method { get; set; }
+
+    private Type? ServiceType;
+    private MethodInfo? Method;
+    private object?[] ParamValues;
+    private string? Result;
+    private List<ParameterInfo> Parameters = new();
+
+    protected override void OnInitialized()
+    {
+        var assembly = typeof(AuthService).Assembly;
+        ServiceType = assembly.GetTypes().FirstOrDefault(t => t.Name == service);
+        Method = ServiceType?.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .FirstOrDefault(m => m.Name == method && !m.IsSpecialName && !m.IsConstructor);
+
+        if (Method != null)
+        {
+            Parameters = Method.GetParameters().ToList();
+            ParamValues = Parameters.Select(p => GetSampleValue(p.ParameterType)).ToArray();
+        }
+    }
+
+    object GetSampleValue(Type type)
+    {
+        if (type == typeof(string)) return "sample";
+        if (type == typeof(int)) return 123;
+        if (type == typeof(bool)) return true;
+        if (type == typeof(double)) return 1.23;
+        // Add more types as needed
+        return Activator.CreateInstance(type) ?? "";
+    }
+
+    void RunTest()
+    {
+        if (ServiceType == null || Method == null) return;
+        var instance = Activator.CreateInstance(ServiceType);
+        try
+        {
+            var result = Method.Invoke(instance, ParamValues);
+            Result = result?.ToString() ?? "null";
+        }
+        catch (Exception ex)
+        {
+            Result = $"Error: {ex.Message}";
+        }
+    }
+}
+<MudPaper Class="pa-6 ma-auto" Style="max-width:700px; margin-top:60px;">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Test: @service.@method</MudText>
+    @if (Parameters.Count > 0)
+    {
+        <MudForm>
+            @for (int i = 0; i < Parameters.Count; i++)
+            {
+                <MudTextField @bind-Value="ParamValues[i]" Label="@Parameters[i].Name" Variant="Variant.Outlined" Class="mb-2" />
+            }
+        </MudForm>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="RunTest">Run Test</MudButton>
+    @if (Result != null)
+    {
+        <MudAlert Severity="Severity.Info" Class="mt-4">@Result</MudAlert>
+    }
+    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("/service-explorer"))">Back</MudButton>
+</MudPaper>
