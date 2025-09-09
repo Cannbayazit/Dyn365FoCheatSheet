@@ -10,39 +10,39 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Style="background-color:#252729 !important;">
-        <span style="color:#00ff00;" class="ml-2">D365 Cheat Sheet</span>
-        <MudSpacer />
+@*#252729*@
 
-        <!-- Theme toggle button -->
-        <MudIconButton Icon="@Icons.Material.Filled.Search"
-                       Style="color:#00ff00;"
-                       OnClick="GoToServiceExplorer"
-                       Edge="Edge.End"
-                       Title="Service Explorer" />
-        <MudIconButton Icon="@Icons.Material.Filled.Add"
-                       Style="color:#00ff00;"
-                       OnClick="GoAddPage"
+<MudLayout>
+    <MudAppBar Style="background-color:#1b1c1e !important;">
+        <span style="color:wheat;" class="ml-2">DCB SAAS</span>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.AttachMoney"
+                       Style="color:wheat;"
+                       OnClick="GoSalaryPage"
                        Edge="Edge.Start"
                        Class="ml-2" />
         <MudIconButton Icon="@Icons.Material.Filled.Brightness6"
-                       Style="color:#00ff00;"
+                       Style="color:wheat;"
                        OnClick="ToggleTheme"
                        Edge="Edge.End" />
 
         <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
-                       Style="color:#00ff00;"
+                       Style="color:wheat;"
                        OnClick="GoBack" 
                        Edge="Edge.Start"
                        Class="ml-2" />
+
     </MudAppBar>
-    <MudMainContent>
+    <MudMainContent Class="main-content-spacing">
+        <MudContainer Fixed="true">
         @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
+
+
     bool IsDarkMode = true;
 
     void ToggleTheme()
@@ -73,16 +73,11 @@
         await JS.InvokeVoidAsync("history.back");
     }
 
-
-    void GoAddPage()
+    void GoSalaryPage()
     {
-         Navigation.NavigateTo("/texteditor");
+        Navigation.NavigateTo("/salary_page");
     }
 
-    void GoToServiceExplorer()
-    {
-        Navigation.NavigateTo("/service-explorer");
-    }
 
 
 }

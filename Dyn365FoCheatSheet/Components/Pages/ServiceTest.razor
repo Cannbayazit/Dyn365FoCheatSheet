@@ -2,27 +2,56 @@
 @using System.Reflection
 @inject NavigationManager Navigation
 
+
+<MudPaper Elevation="4" Class="pa-6 ma-auto" Style="max-width:700px; margin-top:60px;">
+    <MudText Color="Color.Success" Typo="Typo.h5" Align="Align.Center" Class="mb-4">@service.@method</MudText>
+    @if (Parameters.Count > 0)
+    {
+        <MudForm>
+            @for (int i = 0; i < Parameters.Count; i++)
+            {
+                <MudTextField @bind-Value="ParamInputs[i]" Label="@Parameters[i].Name" Variant="Variant.Outlined" Class="mb-2" />
+            }
+        </MudForm>
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="RunTest">Run Test</MudButton>
+    @if (Result != null)
+    {
+        <MudAlert Severity="Severity.Info" Class="mt-4" Style="word-break:break-all; overflow-wrap:anywhere;">
+            @Result
+        </MudAlert>
+    }
+    <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="@(() => Navigation.NavigateTo("/service-explorer"))">Back</MudButton>
+</MudPaper>
+
 @code {
-    [Parameter] public string? service { get; set; }
-    [Parameter] public string? method { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? service { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? method { get; set; }
 
     private Type? ServiceType;
     private MethodInfo? Method;
-    private object?[] ParamValues;
     private string? Result;
     private List<ParameterInfo> Parameters = new();
+    private string[] ParamInputs;
 
     protected override void OnInitialized()
     {
         var assembly = typeof(AuthService).Assembly;
         ServiceType = assembly.GetTypes().FirstOrDefault(t => t.Name == service);
         Method = ServiceType?.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-            .FirstOrDefault(m => m.Name == method && !m.IsSpecialName && !m.IsConstructor);
+                    .Where(m => !m.IsSpecialName && !m.IsConstructor).FirstOrDefault();
 
         if (Method != null)
         {
             Parameters = Method.GetParameters().ToList();
-            ParamValues = Parameters.Select(p => GetSampleValue(p.ParameterType)).ToArray();
+            ParamInputs = Parameters.Count > 0
+    ? Parameters.Select(p => GetSampleValue(p.ParameterType)?.ToString() ?? "").ToArray()
+    : Array.Empty<string>();
         }
     }
 
@@ -42,8 +71,40 @@
         var instance = Activator.CreateInstance(ServiceType);
         try
         {
-            var result = Method.Invoke(instance, ParamValues);
-            Result = result?.ToString() ?? "null";
+            var paramValues = new object[Parameters.Count];
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                var type = Parameters[i].ParameterType;
+                var input = ParamInputs[i];
+
+                if (type == typeof(string))
+                    paramValues[i] = input ?? "";
+                else if (type == typeof(int))
+                    paramValues[i] = int.TryParse(input, out var v) ? v : 0;
+                else if (type == typeof(bool))
+                    paramValues[i] = bool.TryParse(input, out var v) ? v : false;
+                else if (type == typeof(double))
+                    paramValues[i] = double.TryParse(input, out var v) ? v : 0.0;
+                else if (type.IsEnum)
+                    paramValues[i] = Enum.TryParse(type, input, out var v) ? v : Activator.CreateInstance(type);
+                else
+                    paramValues[i] = input ?? ""; // fallback for other types
+            }
+
+            var result = Method.Invoke(instance, paramValues);
+
+            if (result == null)
+            {
+                Result = "null";
+            }
+            else if (result is string || result.GetType().IsPrimitive)
+            {
+                Result = result.ToString();
+            }
+            else
+            {
+                Result = System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            }
         }
         catch (Exception ex)
         {
@@ -51,21 +112,3 @@
         }
     }
 }
-<MudPaper Class="pa-6 ma-auto" Style="max-width:700px; margin-top:60px;">
-    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Test: @service.@method</MudText>
-    @if (Parameters.Count > 0)
-    {
-        <MudForm>
-            @for (int i = 0; i < Parameters.Count; i++)
-            {
-                <MudTextField @bind-Value="ParamValues[i]" Label="@Parameters[i].Name" Variant="Variant.Outlined" Class="mb-2" />
-            }
-        </MudForm>
-    }
-    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="RunTest">Run Test</MudButton>
-    @if (Result != null)
-    {
-        <MudAlert Severity="Severity.Info" Class="mt-4">@Result</MudAlert>
-    }
-    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("/service-explorer"))">Back</MudButton>
-</MudPaper>

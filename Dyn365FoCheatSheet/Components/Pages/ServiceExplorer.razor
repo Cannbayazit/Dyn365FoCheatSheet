@@ -3,15 +3,15 @@
 @inject NavigationManager Navigation
 
 <MudPaper Class="pa-6 ma-auto" Style="max-width:900px; margin-top:60px;">
-    <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-6" Color="Color.Primary" Style="font-weight:bold;">
-        Service Explorer
+    <MudText  Typo="Typo.h4" Align="Align.Center" Class="mb-6" Color="Color.Success">
+        Metod Test Et
     </MudText>
     <MudDivider Class="mb-4" />
 
     @foreach (var service in ServiceTypes)
     {
         <MudExpansionPanels>
-            <MudExpansionPanel Text="@service.Name">
+            <MudExpansionPanel Style="color:#00ff00;  !important" Text="@service.Name">
                 @foreach (var method in service.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                     .Where(m => !m.IsSpecialName && !m.IsConstructor))
                 {
@@ -21,7 +21,7 @@
                             Params: @string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.Name} {p.Name}"))
                         </MudText>
                         <MudText Typo="Typo.body2">Returns: @method.ReturnType.Name</MudText>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                        <MudButton Variant="Variant.Filled" Color="Color.Success"
                                    OnClick="@(() => GoToMethodTest(service.Name, method.Name))">
                             Test
                         </MudButton>

@@ -1,0 +1,6 @@
+@Dyn365FoAPI_HostAddress = http://localhost:5294
+
+GET {{Dyn365FoAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

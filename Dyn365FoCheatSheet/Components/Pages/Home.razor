@@ -1,25 +1,90 @@
 ﻿@page "/home"
-@inject HistoryService History
+@using System.Data
+@using Dyn365FoCheatSheet.Models
 
-<MudGrid>
-    @for (int i = 0; i < 10; i++)
-    {
-        <MudItem xs="12" sm="6" md="4" lg="3">
-            <MudCard>
-                <MudCardMedia Image="images/query.jpg" Height="100" />
-                <MudCardContent>
-                    <MudText Typo="Typo.h5">Query Kullanımı</MudText>
-                    <MudText Typo="Typo.body2">Query kullanmak için öncelikle buraya dahil olunmalı</MudText>
-                    <MudText Class="text-wrap" Typo="Typo.body2">qweuıjhnqwpıuoehnasıjdnjdnasşkjdndjnasşlkj</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn more</MudButton>
-                </MudCardActions>
+<MudContainer Fixed="true" Class="mt-6">
+    <MudText Typo="Typo.h6"  Class="mb-4" Color="Color.Success">
+        Kullanıcı Paneli
+    </MudText>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="4">
+            <MudCard Class="pa-3" Style="background-color:#1b1c1e;" @onclick="GoToServiceExplorer">
+                <MudIconButton Icon="@Icons.Material.Filled.RoomService"
+                               Class="no-hover"
+                               Style="color:wheat;"
+                               Size="Size.Large"
+                               OnClick="GoToServiceExplorer"
+                               Title="Service Explorer" />
+                <MudText Align="Align.Center" Typo="Typo.subtitle2" Style="color:wheat;">Servis Test Ekranı</MudText>
             </MudCard>
         </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudCard Class="pa-3" Style="background-color:#1b1c1e;" @onclick="GoAddPage">
+                <MudIconButton Icon="@Icons.Material.Filled.TextSnippet"
+                               Style="color:wheat;"
+                               OnClick="GoAddPage"
+                               Size="Size.Large"
+                               Class="ml-2 no-hover" />
+                <MudText Align="Align.Center" Typo="Typo.subtitle2" Style="color:wheat;">Javascript Test Ekranı</MudText>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudCard Class="pa-3" Style="background-color:#1b1c1e;" @onclick="GoEmployeePage">
+                <MudIconButton Icon="@Icons.Material.Filled.PeopleOutline"
+                               Style="color:wheat;"
+                               OnClick="GoEmployeePage"
+                               Size="Size.Large"
+                               Class="ml-2 no-hover" />
+                <MudText Align="Align.Center" Typo="Typo.subtitle2" Style="color:wheat;">Personeller</MudText>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+    <MudStack AlignItems="AlignItems.Center">
+    @if (isLoading)
+    {
+        <div class="overlay">
+            <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+        </div>
     }
-</MudGrid>
+    </MudStack>
+ 
+</MudContainer>
+
+
+
+
+@code{
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+    bool isLoading = false;
+   
+
+
+    void GoAddPage()
+    {
+        Navigation.NavigateTo("/texteditor");
+    }
+
+    void GoToServiceExplorer()
+    {
+        Navigation.NavigateTo("/service-explorer");
+    }
+
+    void GoEmployeePage()
+    {
+        isLoading = true;
+        // 100ms bekleme ekleyip async navigasyon yapabilirsin
+        Task.Run(async () =>
+        {
+            await Task.Delay(100); // progress bar'ın render olması için küçük delay
+            Navigation.NavigateTo("/employee");
+        });
+    }
+
+  
+
+}
 
 
 

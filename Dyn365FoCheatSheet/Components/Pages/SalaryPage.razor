@@ -1,0 +1,66 @@
+﻿@using Dyn365FoCheatSheet.Models
+@using System.Data
+@page "/salary_page"
+
+
+<MudTable Items="@employeeSalaries" Dense="true" Hover="true" Bordered="true" Filter="new Func<EmployeeSalary, bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6" Color="Color.Success">
+            I need a dollar, dollar
+            Dollar, that's what I need (Hey, hey)
+        </MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Adı</MudTh>
+        <MudTh>Soy Adı</MudTh>
+        <MudTh>Sicil No</MudTh>
+        <MudTh>Net Maaş</MudTh>
+        <MudTh>Bürüt Maaş</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Sicil No">@context.Adi</MudTd>
+        <MudTd DataLabel="Sicil No">@context.SoyadAdi</MudTd>
+        <MudTd DataLabel="Sicil No">@context.CalKod</MudTd>
+        <MudTd DataLabel="Net Maaş">@context.NetMaas</MudTd>
+        <MudTd DataLabel="Ücret">@context.Ucret</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+
+
+@code {
+     List<EmployeeSalary> employeeSalaries = new List<EmployeeSalary>();
+
+     protected async override Task OnInitializedAsync()
+    {
+        SalaryService salaryService = new SalaryService();
+        VeraService veraService = new VeraService();
+        string FilePath = "C:\\Users\\dcbayazit\\Desktop\\Dynamics365FO\\Dyn365FoCheatSheet\\Dyn365FoCheatSheet\\Queries\\employee_salary.txt";
+        DataTable dt = await veraService.ExecuteQueryAsync(FilePath);
+        employeeSalaries = salaryService.GetEmployeeSalaries(dt);
+    }
+
+
+    private string searchString1 = "";
+    private EmployeeSalary selectedItem1 = null;
+
+    private HashSet<EmployeeSalary> selectedItems = new HashSet<EmployeeSalary>();	
+
+    private bool FilterFunc1(EmployeeSalary salary) => FilterFunc(salary, searchString1);
+
+
+    private bool FilterFunc(EmployeeSalary salary, string searchString)
+    {
+        if (salary.CalKod.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+       
+        return false;
+    }
+
+
+}

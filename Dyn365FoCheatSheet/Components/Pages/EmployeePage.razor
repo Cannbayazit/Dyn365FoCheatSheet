@@ -1,0 +1,72 @@
+﻿@page "/employee"
+@using System.Data
+@using Dyn365FoCheatSheet.Models
+
+<MudContainer Fixed="true" >
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="4">
+            <MudCard Class="pa-3" Style="background-color:#1b1c1e;">
+                <MudText Typo="Typo.subtitle2" Style="color:wheat;">Aktif Personel</MudText>
+                <MudText Typo="Typo.h5" Class="mt-1" Color="Color.Success">@employees.Count()</MudText>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <MudTable Class="mb-4" Elevation="5" Items="@employees" Dense="true" Hover="true" Bordered="true" Outlined="true" Filter="new Func<Employee, bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6" Color="Color.Primary">Personel Listesi</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>ADI</MudTh>
+            <MudTh>SOYADI</MudTh>
+            <MudTh>SICILNO</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Nr">@context.ADI</MudTd>
+            <MudTd DataLabel="Sign">@context.SOYADI</MudTd>
+            <MudTd DataLabel="Name">@context.SICILNO</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudContainer>
+
+
+@code {
+
+    List<Employee> employees = new List<Employee>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        VeraService veraService = new VeraService();
+        string filePath = "C:\\Users\\dcbayazit\\Desktop\\Dynamics365FO\\Dyn365FoCheatSheet\\Dyn365FoCheatSheet\\Queries\\personel_sorgusu.txt";
+        DataTable dt = await veraService.ExecuteQueryAsync(filePath);
+        EmployeeService empService = new EmployeeService();
+        employees = empService.GetAllEmployee(dt);
+    }
+
+    private string searchString1 = "";
+    private Employee selectedItem1 = null;
+
+    private HashSet<Employee> selectedItems = new HashSet<Employee>();
+
+    private bool FilterFunc1(Employee employee) => FilterFunc(employee, searchString1);
+
+
+    private bool FilterFunc(Employee employee, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (employee.ADI.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (employee.SOYADI.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (employee.SICILNO.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+}

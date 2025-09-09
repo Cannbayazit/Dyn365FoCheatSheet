@@ -3,6 +3,11 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.no-hover:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
 a, .btn-link {
     color: #006bb7;
 }
@@ -86,3 +91,17 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+@media (max-width: 600px) {
+    .main-content-spacing {
+        margin-top: 1rem !important;
+    }
+}
+
+@media (min-width: 601px) {
+    .main-content-spacing {
+        margin-top: 2.5rem !important;
+    }
+}
+
+
