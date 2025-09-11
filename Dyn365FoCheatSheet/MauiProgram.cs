@@ -1,5 +1,6 @@
 ﻿using Dyn365FoCheatSheet.Services;
 using Microsoft.Extensions.Logging;
+using MudBlazor;
 using MudBlazor.Services;
 
 namespace Dyn365FoCheatSheet
@@ -17,7 +18,14 @@ namespace Dyn365FoCheatSheet
                 });
 
             builder.Services.AddMauiBlazorWebView();
-            builder.Services.AddMudServices();
+            builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+                config.SnackbarConfiguration.NewestOnTop = false;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 200; 
+            });
             builder.Services.AddScoped<HistoryService>();
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddAuthentication(options =>

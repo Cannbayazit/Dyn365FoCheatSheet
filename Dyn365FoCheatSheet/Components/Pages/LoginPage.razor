@@ -31,13 +31,16 @@
     private string? Password { get; set; }
     private string? ErrorMessage { get; set; }
 
+    public User user { get; set; } 
+
     private async Task LoginAsync()
     {
         var success = await AuthService.LoginAsync(Username, Password);
         if (success)
         {
+            user =  AuthService.GetCurrentUser(Username);
             Snackbar.Add("Giriş Yaptınız.", Severity.Success);
-            navigationManager.NavigateTo("/home");
+            navigationManager.NavigateTo($"/home?role={user.Role}&name={user.Username}");
         }
         else
         {

@@ -62,7 +62,9 @@
     public NavigationManager Navigation { get; set; }
     bool isLoading = false;
    
-
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "role")]
+    public string Role { get; set; }
 
     void GoAddPage()
     {
