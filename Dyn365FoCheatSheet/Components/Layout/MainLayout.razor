@@ -10,12 +10,11 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-@*#252729*@
-
 <MudLayout>
     <MudAppBar Style="background-color:#1b1c1e !important;">
         <span style="color:wheat;" class="ml-2">DCB SAAS</span>
         <MudSpacer />
+
         <MudIconButton Icon="@Icons.Material.Filled.AttachMoney"
                        Style="color:wheat;"
                        OnClick="GoSalaryPage"
@@ -28,22 +27,45 @@
 
         <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
                        Style="color:wheat;"
-                       OnClick="GoBack" 
+                       OnClick="GoBack"
                        Edge="Edge.Start"
                        Class="ml-2" />
 
     </MudAppBar>
     <MudMainContent Class="main-content-spacing">
         <MudContainer Fixed="true">
-        @Body
+            @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <MudProgressCircular Style="color:wheat;height:100px;width:100px;" Indeterminate="true">
+            <ChildContent>Loading...</ChildContent>
+        </MudProgressCircular>
+        @* <MudProgressLinear Color="Color.Primary" Buffer="true" Value="@Value" BufferValue="@BufferValue" Class="my-7" /> *@
+    </div>
+}
+
+
+
 @code {
-
-
     bool IsDarkMode = true;
+    bool isLoading = false;
+    public int Value { get; set; }
+    public int BufferValue { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Sayfa değişince loading otomatik kapanır
+        Navigation.LocationChanged += (_, __) =>
+        {
+            isLoading = false;
+            InvokeAsync(StateHasChanged);
+        };
+    }
 
     void ToggleTheme()
     {
@@ -75,9 +97,13 @@
 
     void GoSalaryPage()
     {
-        Navigation.NavigateTo("/salary_page");
+        isLoading = true;
+        StateHasChanged();
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(200); // overlay render için küçük gecikme
+            Navigation.NavigateTo("/salary_page");
+        });
     }
-
-
-
 }

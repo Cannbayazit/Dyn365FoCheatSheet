@@ -6,10 +6,10 @@
 @inject AuthService AuthService
 
 <MudPaper Elevation="5" Class="d-flex flex-column pa-6 ma-auto" Style="border-radius:15px !important; max-width:400px; margin-top:100px; ">
-    <MudImage Src="images/logo2.png"
-              Alt="Logo"
-              Width="120"
-              Class="mx-auto mb-4" />
+    <MudAvatar Class="mx-auto mb-4" Style="width:170px;height:170px;">
+        <MudImage Src="images/DCBSAAS.jpeg"
+                  Class="mx-auto mb-4" />
+    </MudAvatar>
 
     <MudTextField @bind-Value="Username" Label="Kullanıcı Adı" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
     <MudTextField @bind-Value="Password" Label="Şifre" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />

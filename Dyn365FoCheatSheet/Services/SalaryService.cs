@@ -21,8 +21,8 @@ namespace Dyn365FoCheatSheet.Services
                 NetMaas = row.Field<decimal?>("C13NETMAAS"),
                 //Kestop = row.Field<decimal?>("C13KESTOP"),
                 Ucret = row.Field<decimal?>("B79UCRET"),
-                //OdesNo = row.Field<int?>("B79ODESNO"),
-                //OdeYil = row.Field<int?>("B79ODEYIL"),
+                OdesNo = row.Field<decimal?>("B79ODESNO"),
+                OdeYil = row.Field<decimal>("B79ODEYIL"),
             }).ToList();
             return employeeSalaries;
         }

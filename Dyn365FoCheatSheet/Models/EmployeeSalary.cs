@@ -15,8 +15,8 @@ namespace Dyn365FoCheatSheet.Models
         public string CalKod { get; set; }
 
         public decimal? Ucret { get; set; }     // B79UCRET
-        public int? OdesNo { get; set; }        // B79ODESNO
-        public int? OdeYil { get; set; }        // B79ODEYIL
+        public decimal? OdesNo { get; set; }        // B79ODESNO
+        public decimal? OdeYil { get; set; }        // B79ODEYIL
 
     }
 }

@@ -43,9 +43,12 @@
     <MudStack AlignItems="AlignItems.Center">
     @if (isLoading)
     {
-        <div class="overlay">
-            <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
-        </div>
+            <div class="loading-overlay">
+                <MudProgressCircular Style="color:wheat;height:100px;width:100px;" Indeterminate="true" >
+                    <ChildContent>Loading...</ChildContent>
+                </MudProgressCircular>
+                @* <MudProgressLinear Color="Color.Primary" Buffer="true" Value="@Value" BufferValue="@BufferValue" Class="my-7" /> *@
+            </div>
     }
     </MudStack>
  

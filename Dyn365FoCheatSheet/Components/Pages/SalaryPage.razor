@@ -13,15 +13,17 @@
         <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Adı</MudTh>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<EmployeeSalary, object>(x => x.OdeYil)">Yıl</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<EmployeeSalary, object>(x => x.Adi)">Adı</MudTableSortLabel></MudTh>
         <MudTh>Soy Adı</MudTh>
         <MudTh>Sicil No</MudTh>
-        <MudTh>Net Maaş</MudTh>
-        <MudTh>Bürüt Maaş</MudTh>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<EmployeeSalary, object>(x => x.NetMaas)">Net Maaş</MudTableSortLabel></MudTh>
+        <MudTh>Brüt Maaş</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Sicil No">@context.Adi</MudTd>
-        <MudTd DataLabel="Sicil No">@context.SoyadAdi</MudTd>
+        <MudTd DataLabel="Yıl">@context.OdeYil</MudTd>
+        <MudTd DataLabel="Adı">@context.Adi</MudTd>
+        <MudTd DataLabel="Soyadı">@context.SoyadAdi</MudTd>
         <MudTd DataLabel="Sicil No">@context.CalKod</MudTd>
         <MudTd DataLabel="Net Maaş">@context.NetMaas</MudTd>
         <MudTd DataLabel="Ücret">@context.Ucret</MudTd>
