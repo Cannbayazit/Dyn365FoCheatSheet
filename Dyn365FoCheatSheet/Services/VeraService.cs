@@ -12,16 +12,24 @@ namespace Dyn365FoCheatSheet.Services
     {
         private const string ConnectionString = "Provider=IBMDA400;Data Source=10.3.0.7;User ID=UYG_PER;Password=UYG_PER";
 
-        public async Task<DataTable> ExecuteQueryAsync(string filePath)
+        public  DataTable ExecuteQuery(string filePath,string extendQuery="")
         {
+            
             using var connection = new OleDbConnection(ConnectionString);
+
+            if (extendQuery != "")
+            {
+                BaseService.AppendUniqueQueryToFile(filePath, extendQuery);
+            }
+
             string sql = File.ReadAllText(filePath, Encoding.UTF8);
+
 
             using var command = new OleDbCommand(sql, connection);
             var dataTable = new DataTable();
 
-            await connection.OpenAsync();
-            using var reader = await command.ExecuteReaderAsync();
+            connection.OpenAsync();
+            using var reader =  command.ExecuteReader();
             dataTable.Load(reader);
 
             return dataTable;

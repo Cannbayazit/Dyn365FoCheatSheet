@@ -43,7 +43,7 @@
     {
         VeraService veraService = new VeraService();
         string filePath = "C:\\Users\\dcbayazit\\Desktop\\Dynamics365FO\\Dyn365FoCheatSheet\\Dyn365FoCheatSheet\\Queries\\personel_sorgusu.txt";
-        DataTable dt = await veraService.ExecuteQueryAsync(filePath);
+        DataTable dt =  veraService.ExecuteQuery(filePath);
         EmployeeService empService = new EmployeeService();
         employees = empService.GetAllEmployee(dt);
     }

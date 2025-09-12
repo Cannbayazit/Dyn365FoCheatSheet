@@ -70,5 +70,28 @@ namespace Dyn365FoCheatSheet.Services
 
         }
 
+        public Employee GetEmployee(DataTable dt)
+        {
+            var employee = dt.AsEnumerable()
+                .Select(row => new Employee
+                {
+                    ISLETME = row.Field<string>("ISLETME"),
+                    SICILNO = row.Field<string>("SICILNO"),
+                    ADI = row.Field<string>("ADI"),
+                    SOYADI = row.Field<string>("SOYADI"),
+                    UNVANKODU = row.Field<string>("UNVANKODU"),
+                    UNVANADI = row.Field<string>("UNVANADI"),
+                    ISYERIADI = row.Field<string>("ISYERIADI"),
+                    CINSIYET = row.Field<string>("CINSIYET")
+                })
+                .FirstOrDefault();
+
+            return employee;
+        }
+
+
+
+
+
     }
 }

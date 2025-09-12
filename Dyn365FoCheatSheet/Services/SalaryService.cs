@@ -26,5 +26,6 @@ namespace Dyn365FoCheatSheet.Services
             }).ToList();
             return employeeSalaries;
         }
+
     }
 }

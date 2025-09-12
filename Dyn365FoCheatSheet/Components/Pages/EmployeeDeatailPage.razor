@@ -1,0 +1,108 @@
+﻿@page "/employee-detail"
+@using Dyn365FoCheatSheet.Models
+@using System.Data
+
+<MudContainer Fixed="true">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabPanel Text="Dikey Grafik">
+            <MudTextField @bind-Value="CalKodInput" Label="Çalışan Kodu" Variant="Variant.Outlined" Placeholder="Sicil Numarası" Immediate="true" Margin="Margin.Normal" />
+            <MudButton Class="mt-2 mb-2" StartIcon="@Icons.Material.Filled.Search" OnClick="UpdateChart" Variant="Variant.Filled" style="color:#1b1c1e;background-color:wheat;">Ara</MudButton>
+            <MudText Align="Align.Center" Style="color:wheat;" Typo="Typo.subtitle2">Aylara Göre Maaş Grafiği</MudText>
+            <MudPaper Class="doc-section-component-container" Elevation="5">
+                <MudStack AlignItems="AlignItems.Center">
+                    <MudChart ChartType="ChartType.Bar" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="@_width" Height="@_height" AxisChartOptions="_axisChartOptions"></MudChart>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+        <MudTabPanel Text="Çizgi Grafik">
+            <MudTextField @bind-Value="CalKodInput" Label="Çalışan Kodu" Variant="Variant.Outlined" Placeholder="Sicil Numarası" Immediate="true" Margin="Margin.Normal" />
+            <MudButton Class="mt-2 mb-2" StartIcon="@Icons.Material.Filled.Search" OnClick="UpdateChart" Variant="Variant.Filled" style="color:#1b1c1e;background-color:wheat;">Ara</MudButton>
+            <MudText Align="Align.Center" Style="color:wheat;" Typo="Typo.subtitle2">Aylara Göre Maaş Grafiği</MudText>
+            <MudPaper Class="doc-section-component-container" Elevation="5">
+                <MudStack AlignItems="AlignItems.Center">
+                    <MudChart ChartType="ChartType.Line" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="@_width" Height="@_height" AxisChartOptions="_axisChartOptions"></MudChart>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+        <MudTabPanel Text="Dizili Grafik">
+            <MudTextField @bind-Value="CalKodInput" Label="Çalışan Kodu" Variant="Variant.Outlined" Placeholder="Sicil Numarası" Immediate="true" Margin="Margin.Normal" />
+            <MudButton Class="mt-2 mb-2" StartIcon="@Icons.Material.Filled.Search" OnClick="UpdateChart" Variant="Variant.Filled" style="color:#1b1c1e;background-color:wheat;">Ara</MudButton>
+            <MudText Align="Align.Center" Style="color:wheat;" Typo="Typo.subtitle2">Aylara Göre Maaş Grafiği</MudText>
+            <MudPaper Class="doc-section-component-container" Elevation="5">
+                <MudStack AlignItems="AlignItems.Center">
+                    <MudChart ChartType="ChartType.StackedBar" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="@_width" Height="@_height" AxisChartOptions="_axisChartOptions"></MudChart>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+    </MudTabs>
+   
+
+</MudContainer>
+
+
+
+@code {
+    private int _index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    private string _width = "650px";
+    private string _height = "350px";
+    List<EmployeeSalary> employeeSalaries = new List<EmployeeSalary>();
+    private List<ChartSeries> _series { get; set; }
+    public double[] netMaas = new double[] { };
+    private string[] _xAxisLabels;
+    private AxisChartOptions _axisChartOptions = new AxisChartOptions();
+    private string CalKodInput { get; set; }
+
+
+
+    private void UpdateChart()
+    {
+        SalaryService salaryService = new SalaryService();
+        VeraService veraService = new VeraService();
+        DataTable dt = new DataTable();
+        string sql = null;
+        string FilePath = "C:\\Users\\dcbayazit\\Desktop\\Dynamics365FO\\Dyn365FoCheatSheet\\Dyn365FoCheatSheet\\Queries\\employee_salary.txt";
+
+        if (!string.IsNullOrEmpty(CalKodInput))
+        {
+            sql = "and b.C13CALKOD = '" + CalKodInput + " ' ORDER BY p.B79ODEYIL, p.B79ODESNO DESC";
+
+            dt = veraService.ExecuteQuery(FilePath, sql);
+            employeeSalaries = salaryService.GetEmployeeSalaries(dt);
+        }
+
+
+        var netMaasData = employeeSalaries
+            .Where(e => e.CalKod == CalKodInput)
+            .Select(e => (double)(e.NetMaas ?? 0))
+            .Distinct()
+            .OrderBy(x => x)
+            .ToArray();
+
+        var months = employeeSalaries
+            .Where(e => e.CalKod == CalKodInput)
+            .Select(e => e.OdesNo ?? 0) // select as decimal
+            .Distinct()
+            .OrderBy(x => x)
+            .Select(x => x.ToString())  // convert to string after sorting
+            .ToArray();
+
+        _xAxisLabels = months;
+        _series = new List<ChartSeries>
+        {
+            new ChartSeries
+            {
+                Name = "Net Maaş",
+                Data = netMaasData
+            }
+        };
+
+        BaseService.RemoveQueryFromFile(FilePath, sql);
+        StateHasChanged();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        UpdateChart();
+    }
+}
+

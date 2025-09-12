@@ -45,7 +45,7 @@
         SalaryService salaryService = new SalaryService();
         VeraService veraService = new VeraService();
         string FilePath = "C:\\Users\\dcbayazit\\Desktop\\Dynamics365FO\\Dyn365FoCheatSheet\\Dyn365FoCheatSheet\\Queries\\employee_salary.txt";
-        DataTable dt = await veraService.ExecuteQueryAsync(FilePath);
+        DataTable dt =  veraService.ExecuteQuery(FilePath);
         employeeSalaries = salaryService.GetEmployeeSalaries(dt);
     }
 

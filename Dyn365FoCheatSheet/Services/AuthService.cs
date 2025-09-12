@@ -6,8 +6,8 @@ namespace Dyn365FoCheatSheet.Services
         {
             new User
             {
-                Username = "dcbayazit",
-                PasswordHash = "1234",
+                Username = "1",
+                PasswordHash = "1",
                 Role = "Administrator"
             },
             new User

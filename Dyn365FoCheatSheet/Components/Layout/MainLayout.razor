@@ -18,7 +18,10 @@
         <MudText Class="ms-1" Style="color:wheat;" Typo="Typo.subtitle2"> @Role</MudText>
         <MudText Class="ms-1" Typo="Typo.subtitle2">@Name</MudText>
         <MudSpacer />
-
+        <MudIconButton Icon="@Icons.Material.Filled.BarChart"
+                       Style="color:wheat;"
+                       OnClick="GoEmployeeDetailsPage"
+                       Edge="Edge.End" />
         <MudIconButton Icon="@Icons.Material.Filled.AttachMoney"
                        Style="color:wheat;"
                        Disabled="@(Role != "Administrator")"
@@ -118,6 +121,17 @@
         {
             await Task.Delay(200); // overlay render için küçük gecikme
             Navigation.NavigateTo("/salary_page");
+        });
+    }
+    void GoEmployeeDetailsPage()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(200); // overlay render için küçük gecikme
+            Navigation.NavigateTo("/employee-detail");
         });
     }
 }
